@@ -1,7 +1,16 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
-    <meta http-equiv="refresh" content="0; URL=/" />
+    <meta charset="UTF-8">
+    <meta http-equiv="refresh" content="0;url=/project/">
+    <title>Redirecting...</title>
+    <script>
+      const path = window.location.pathname + window.location.search + window.location.hash;
+      sessionStorage.setItem('redirectPath', path);
+      window.location.replace('/project/');
+    </script>
   </head>
-  <body></body>
+  <body>
+    <p>Redirecting to <a href="/project/">home</a>...</p>
+  </body>
 </html>
