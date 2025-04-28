@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Search, Home, Users, Briefcase, Bell, MessageCircle, ChevronDown, Menu, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { currentUser } from '../../utils/mockData';
@@ -8,7 +9,7 @@ const Navbar: React.FC = () => {
   const [showNotifications, setShowNotifications] = useState(false);
   const [showMessages, setShowMessages] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
-  
+
   const notifications = [
     { id: 1, content: 'New project proposal received', time: '5m ago', unread: true },
     { id: 2, content: 'Client meeting scheduled', time: '1h ago', unread: true },
@@ -23,12 +24,10 @@ const Navbar: React.FC = () => {
   return (
     <header className="sticky top-0 z-50 bg-fb-card shadow-md">
       <div className="max-w-7xl mx-auto flex items-center justify-between px-4 py-2">
-        {/* Left section */}
         <div className="flex items-center">
-          <a href="/" className="mr-2 md:mr-4">
+          <Link to="/" className="mr-2 md:mr-4">
             <h1 className="text-fb-accent text-3xl font-bold">portfolio</h1>
-          </a>
-          
+          </Link>
           <div className={`hidden sm:flex relative rounded-full bg-fb-hover ${searchFocused ? 'ring-2 ring-fb-accent' : ''}`}>
             <div className="flex items-center pl-3 text-fb-text-secondary">
               <Search size={20} />
@@ -42,8 +41,6 @@ const Navbar: React.FC = () => {
             />
           </div>
         </div>
-        
-        {/* Middle section - Desktop Navigation */}
         <div className="hidden md:flex items-center justify-center flex-1">
           <nav className="flex space-x-1">
             {[
@@ -51,15 +48,13 @@ const Navbar: React.FC = () => {
               { icon: Users, path: '/profile', label: 'Profile' },
               { icon: Briefcase, path: '/projects', label: 'Projects' },
             ].map((item) => {
-              const isActive = window.location.pathname === item.path;
+              const isActive = window.location.pathname === `/project${item.path}`;
               return (
-                <a
+                <Link
                   key={item.path}
-                  href={item.path}
+                  to={item.path}
                   className={`fb-icon-button mx-1 p-3 relative group ${
-                    isActive 
-                      ? 'text-fb-accent' 
-                      : 'text-fb-text-secondary hover:bg-fb-hover'
+                    isActive ? 'text-fb-accent' : 'text-fb-text-secondary hover:bg-fb-hover'
                   }`}
                 >
                   <item.icon size={24} />
@@ -72,17 +67,14 @@ const Navbar: React.FC = () => {
                   <span className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 text-sm bg-fb-card rounded opacity-0 group-hover:opacity-100 transition-opacity">
                     {item.label}
                   </span>
-                </a>
+                </Link>
               );
             })}
           </nav>
         </div>
-        
-        {/* Right section */}
         <div className="flex items-center space-x-2">
-          {/* Notifications */}
           <div className="relative">
-            <button 
+            <button
               className="fb-icon-button hidden md:flex relative"
               onClick={() => {
                 setShowNotifications(!showNotifications);
@@ -95,7 +87,6 @@ const Navbar: React.FC = () => {
                 2
               </span>
             </button>
-            
             <AnimatePresence>
               {showNotifications && (
                 <motion.div
@@ -116,9 +107,7 @@ const Navbar: React.FC = () => {
                         }`}
                       >
                         <p className="text-sm">{notification.content}</p>
-                        <p className="text-xs text-fb-text-secondary mt-1">
-                          {notification.time}
-                        </p>
+                        <p className="text-xs text-fb-text-secondary mt-1">{notification.time}</p>
                       </div>
                     ))}
                   </div>
@@ -126,10 +115,8 @@ const Navbar: React.FC = () => {
               )}
             </AnimatePresence>
           </div>
-
-          {/* Messages */}
           <div className="relative">
-            <button 
+            <button
               className="fb-icon-button hidden md:flex relative"
               onClick={() => {
                 setShowMessages(!showMessages);
@@ -142,7 +129,6 @@ const Navbar: React.FC = () => {
                 2
               </span>
             </button>
-            
             <AnimatePresence>
               {showMessages && (
                 <motion.div
@@ -170,12 +156,8 @@ const Navbar: React.FC = () => {
                           />
                           <div>
                             <p className="font-medium">{message.user}</p>
-                            <p className="text-sm text-fb-text-secondary">
-                              {message.content}
-                            </p>
-                            <p className="text-xs text-fb-text-secondary mt-1">
-                              {message.time}
-                            </p>
+                            <p className="text-sm text-fb-text-secondary">{message.content}</p>
+                            <p className="text-xs text-fb-text-secondary mt-1">{message.time}</p>
                           </div>
                         </div>
                       </div>
@@ -185,10 +167,8 @@ const Navbar: React.FC = () => {
               )}
             </AnimatePresence>
           </div>
-
-          {/* User Menu */}
           <div className="relative">
-            <button 
+            <button
               className="fb-icon-button hidden md:flex"
               onClick={() => {
                 setShowUserMenu(!showUserMenu);
@@ -198,7 +178,6 @@ const Navbar: React.FC = () => {
             >
               <ChevronDown size={20} />
             </button>
-            
             <AnimatePresence>
               {showUserMenu && (
                 <motion.div
@@ -216,32 +195,39 @@ const Navbar: React.FC = () => {
                       />
                       <div>
                         <p className="font-medium">{currentUser.name}</p>
-                        <p className="text-sm text-fb-text-secondary">
-                          {currentUser.role}
-                        </p>
+                        <p className="text-sm text-fb-text-secondary">{currentUser.role}</p>
                       </div>
                     </div>
                   </div>
                   <div>
                     {[
-                      { label: 'Settings', href: '/settings' },
+                      { label: 'Settings', to: '/settings' },
                       { label: 'Help Center', href: '/help' },
-                      { label: 'Sign Out', href: '/logout' }
-                    ].map((item, index) => (
-                      <a
-                        key={index}
-                        href={item.href}
-                        className="block px-4 py-2 hover:bg-fb-hover"
-                      >
-                        {item.label}
-                      </a>
-                    ))}
+                      { label: 'Sign Out', href: '/logout' },
+                    ].map((item, index) =>
+                      item.to ? (
+                        <Link
+                          key={index}
+                          to={item.to}
+                          className="block px-4 py-2 hover:bg-fb-hover"
+                        >
+                          {item.label}
+                        </Link>
+                      ) : (
+                        <a
+                          key={index}
+                          href={item.href}
+                          className="block px-4 py-2 hover:bg-fb-hover"
+                        >
+                          {item.label}
+                        </a>
+                      )
+                    )}
                   </div>
                 </motion.div>
               )}
             </AnimatePresence>
           </div>
-          
           <div className="flex items-center ml-2">
             <img
               src={currentUser.avatar}
@@ -249,7 +235,6 @@ const Navbar: React.FC = () => {
               className="w-10 h-10 rounded-full"
             />
           </div>
-          
           <button className="fb-icon-button md:hidden">
             <Menu size={24} />
           </button>

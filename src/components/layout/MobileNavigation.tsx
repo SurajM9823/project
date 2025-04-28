@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Home, User, Briefcase, Menu, Bell, X, MessageCircle, Search } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { currentUser, sidebarItems } from '../../utils/mockData';
@@ -11,34 +12,40 @@ const MobileNavigation: React.FC = () => {
     { icon: Home, path: '/', label: 'Home' },
     { icon: User, path: '/profile', label: 'Profile' },
     { icon: Briefcase, path: '/projects', label: 'Projects' },
-    { icon: Bell, path: '/notifications', label: 'Notifications' },
-    { icon: Menu, onClick: () => setIsMenuOpen(true), label: 'Menu' }
+    { icon: Menu, onClick: () => setIsMenuOpen(true), label: 'Menu' }, // Removed /notifications
   ];
 
   return (
     <>
-      {/* Bottom Navigation Bar */}
       <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-fb-card border-t border-fb-hover z-40">
         <div className="flex items-center justify-around">
-          {mainNavItems.map((item, index) => (
-            <a
-              key={index}
-              href={item.onClick ? undefined : item.path}
-              onClick={item.onClick}
-              className={`flex flex-col items-center py-2 px-3 ${
-                path === item.path 
-                  ? 'text-fb-accent' 
-                  : 'text-fb-text-secondary'
-              }`}
-            >
-              <item.icon size={24} />
-              <span className="text-xs mt-1">{item.label}</span>
-            </a>
-          ))}
+          {mainNavItems.map((item, index) =>
+            item.onClick ? (
+              <button
+                key={index}
+                onClick={item.onClick}
+                className={`flex flex-col items-center py-2 px-3 ${
+                  path === item.path ? 'text-fb-accent' : 'text-fb-text-secondary'
+                }`}
+              >
+                <item.icon size={24} />
+                <span className="text-xs mt-1">{item.label}</span>
+              </button>
+            ) : (
+              <Link
+                key={index}
+                to={item.path}
+                className={`flex flex-col items-center py-2 px-3 ${
+                  path === `/project${item.path}` ? 'text-fb-accent' : 'text-fb-text-secondary'
+                }`}
+              >
+                <item.icon size={24} />
+                <span className="text-xs mt-1">{item.label}</span>
+              </Link>
+            )
+          )}
         </div>
       </nav>
-
-      {/* Mobile Menu Overlay */}
       <AnimatePresence>
         {isMenuOpen && (
           <motion.div
@@ -54,9 +61,8 @@ const MobileNavigation: React.FC = () => {
               exit={{ x: '100%' }}
               transition={{ type: 'tween' }}
               className="absolute right-0 top-0 bottom-0 w-[80%] max-w-[300px] bg-fb-card"
-              onClick={e => e.stopPropagation()}
+              onClick={(e) => e.stopPropagation()}
             >
-              {/* Header */}
               <div className="flex items-center justify-between p-4 border-b border-fb-hover">
                 <div className="flex items-center">
                   <img
@@ -69,18 +75,16 @@ const MobileNavigation: React.FC = () => {
                     <p className="text-sm text-fb-text-secondary">{currentUser.role}</p>
                   </div>
                 </div>
-                <button
-                  onClick={() => setIsMenuOpen(false)}
-                  className="text-fb-text-secondary"
-                >
+                <button onClick={() => setIsMenuOpen(false)} className="text-fb-text-secondary">
                   <X size={24} />
                 </button>
               </div>
-
-              {/* Search */}
               <div className="p-4">
                 <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-fb-text-secondary" size={20} />
+                  <Search
+                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-fb-text-secondary"
+                    size={20}
+                  />
                   <input
                     type="text"
                     placeholder="Search Portfolio"
@@ -88,19 +92,16 @@ const MobileNavigation: React.FC = () => {
                   />
                 </div>
               </div>
-
-              {/* Menu Items */}
               <div className="overflow-y-auto h-[calc(100vh-200px)] custom-scrollbar">
                 <div className="p-2 space-y-1">
                   {sidebarItems.map((item, index) => {
-                    // @ts-ignore - Dynamically accessing Lucide icons
                     const Icon = item.icon;
                     return (
-                      <a
+                      <Link
                         key={index}
-                        href={item.path}
+                        to={item.path}
                         className={`flex items-center p-3 rounded-lg transition-colors ${
-                          path === item.path
+                          path === `/project${item.path}`
                             ? 'bg-fb-accent text-white'
                             : 'hover:bg-fb-hover'
                         }`}
@@ -108,30 +109,28 @@ const MobileNavigation: React.FC = () => {
                       >
                         <Icon size={20} className="mr-3" />
                         <span>{item.label}</span>
-                      </a>
+                      </Link>
                     );
                   })}
                 </div>
-
-                {/* Portfolio Sections */}
                 <div className="p-4 border-t border-fb-hover mt-4">
                   <h3 className="text-fb-text-secondary font-medium mb-2">Portfolio Sections</h3>
                   <div className="space-y-1">
-                    {['Projects', 'Education', 'Experience', 'Certifications', 'Skills'].map((item) => (
-                      <a
-                        key={item}
-                        href={`#${item.toLowerCase()}`}
-                        className="block p-3 rounded-lg hover:bg-fb-hover transition-colors"
-                        onClick={() => setIsMenuOpen(false)}
-                      >
-                        {item}
-                      </a>
-                    ))}
+                    {['Projects', 'Education', 'Experience', 'Certifications', 'Skills'].map(
+                      (item) => (
+                        <Link
+                          key={item}
+                          to={`/${item.toLowerCase()}`}
+                          className="block p-3 rounded-lg hover:bg-fb-hover transition-colors"
+                          onClick={() => setIsMenuOpen(false)}
+                        >
+                          {item}
+                        </Link>
+                      )
+                    )}
                   </div>
                 </div>
               </div>
-
-              {/* Footer */}
               <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-fb-hover bg-fb-card">
                 <button className="w-full p-3 bg-fb-accent text-white rounded-lg font-medium">
                   Sign Out
